@@ -8,9 +8,12 @@
   </head>
   <body>
     <header class="topbar">
-      <div>
-        <p class="eyebrow">Dinner Ops</p>
-        <h1>吃饭了</h1>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">饭</div>
+        <div>
+          <strong>吃饭了</strong>
+          <span>点单、采购、厨房进度一条线</span>
+        </div>
       </div>
       <div class="session-actions">
         <span id="currentRole" class="role-chip">请选择角色</span>
@@ -20,134 +23,209 @@
 
     <main class="app-shell">
       <section class="login-panel" id="loginPanel" aria-labelledby="loginTitle">
-        <div class="intro">
-          <p class="eyebrow">Role Login</p>
-          <h2 id="loginTitle">饭点前，系统先帮你把菜安排上。</h2>
-          <p>厨师维护菜单和订单进度，客户选择菜品并实时查看厨房状态。</p>
+        <div class="cover-copy">
+          <p class="eyebrow">Dinner Ops</p>
+          <h1 id="loginTitle">饭点到了，先把今晚吃什么安排好。</h1>
+          <p>
+            客户快速点单并看见厨房进度；厨师维护今日菜单、收到订单、生成采购清单并通知开饭。
+          </p>
         </div>
         <div class="role-grid">
-          <button class="role-card" data-role="chef" type="button">
-            <span class="role-icon">厨</span>
-            <strong>厨师登录</strong>
-            <span>录入菜品、查看待处理订单、汇总采购清单。</span>
-          </button>
           <button class="role-card" data-role="customer" type="button">
             <span class="role-icon">客</span>
-            <strong>客户登录</strong>
-            <span>浏览菜单、提交点单、收到“吃饭啦”通知。</span>
+            <strong>客户点单</strong>
+            <span>浏览今日菜单、选择菜品、填写人数和口味备注。</span>
+          </button>
+          <button class="role-card" data-role="chef" type="button">
+            <span class="role-icon chef">厨</span>
+            <strong>厨师工作台</strong>
+            <span>处理新订单、核对采购清单、推进备菜和烹饪状态。</span>
           </button>
         </div>
       </section>
 
-      <section class="workspace hidden" id="chefWorkspace" aria-labelledby="chefTitle">
-        <div class="workspace-head">
-          <div>
-            <p class="eyebrow">Chef Console</p>
-            <h2 id="chefTitle">厨房工作台</h2>
-          </div>
-          <button class="ghost-button" data-action="logout" type="button">切换角色</button>
-        </div>
-
-        <div class="dashboard-grid">
-          <aside class="side-panel">
-            <h3>新增菜品</h3>
-            <form id="dishForm" class="dish-form">
-              <label>
-                菜品名称
-                <input name="name" required placeholder="例如：番茄牛腩" />
-              </label>
-              <label>
-                材料清单
-                <textarea name="ingredients" required placeholder="番茄、牛腩、土豆、葱姜"></textarea>
-              </label>
-              <div class="two-col">
-                <label>
-                  制作时长
-                  <input name="minutes" type="number" min="1" required placeholder="35" />
-                </label>
-                <label>
-                  难易程度
-                  <select name="difficulty" required>
-                    <option value="简单">简单</option>
-                    <option value="中等">中等</option>
-                    <option value="困难">困难</option>
-                  </select>
-                </label>
+      <section class="workspace customer-workspace hidden" id="customerWorkspace" aria-labelledby="customerTitle">
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="mobile-status"><span>18:05</span><span>5G 100%</span></div>
+            <div class="app-top">
+              <div class="brand compact">
+                <div class="logo" aria-hidden="true">饭</div>
+                <div>
+                  <strong id="customerTitle">吃饭了</strong>
+                  <span id="customerSubtitle">今日菜单准备中</span>
+                </div>
               </div>
-              <button class="primary-button" type="submit">保存菜品</button>
-            </form>
-          </aside>
+              <button class="icon-button" data-action="logout" type="button" aria-label="切换角色">↔</button>
+            </div>
 
-          <div class="content-stack">
-            <section class="panel">
-              <div class="panel-title">
-                <h3>菜单管理</h3>
-                <span id="dishCount"></span>
+            <section class="hero-panel">
+              <h2>饭点到了，先选想吃的菜。</h2>
+              <div class="hero-row">
+                <span id="customerEta">下单后厨师会同步采购和制作进度</span>
+                <button class="light-button" type="button" data-scroll-orders>看进度</button>
               </div>
-              <div id="chefDishList" class="dish-list"></div>
             </section>
 
-            <section class="panel">
-              <div class="panel-title">
-                <h3>订单消息</h3>
-                <span id="orderCount"></span>
-              </div>
-              <div id="chefOrderList" class="order-list"></div>
-            </section>
+            <nav id="categoryTabs" class="tabs" aria-label="菜品分类"></nav>
+            <div id="customerDishList" class="dish-list customer-menu"></div>
 
-            <section class="panel">
-              <div class="panel-title">
-                <h3>待采购清单</h3>
-                <span>来自未完成订单</span>
+            <aside class="order-sheet" aria-labelledby="orderSheetTitle">
+              <div class="sheet-grip" aria-hidden="true"></div>
+              <h3 id="orderSheetTitle">确认点单</h3>
+              <form id="orderForm" class="form-stack">
+                <label>
+                  你的称呼
+                  <input name="customer" required placeholder="例如：小张" />
+                </label>
+                <label>
+                  用餐人数
+                  <input name="people" type="number" min="1" max="20" value="2" required />
+                </label>
+                <label>
+                  口味备注
+                  <textarea name="note" placeholder="少油少辣、米饭多一点"></textarea>
+                </label>
+                <div id="selectedDishes" class="selected-dishes">还未选择菜品</div>
+                <button class="cta-button" type="submit">下单通知厨师</button>
+              </form>
+            </aside>
+
+            <section class="progress-section" id="customerOrders">
+              <div class="section-title">
+                <div>
+                  <p class="eyebrow">Order Status</p>
+                  <h3>我的订单进度</h3>
+                </div>
+                <span id="customerOrderCount" class="tag">0 单</span>
               </div>
-              <div id="shoppingList" class="shopping-list"></div>
+              <div id="customerOrderList" class="order-list"></div>
             </section>
           </div>
         </div>
       </section>
 
-      <section class="workspace hidden" id="customerWorkspace" aria-labelledby="customerTitle">
-        <div class="workspace-head">
-          <div>
-            <p class="eyebrow">Customer Console</p>
-            <h2 id="customerTitle">今日点单</h2>
-          </div>
-          <button class="ghost-button" data-action="logout" type="button">切换角色</button>
-        </div>
-
-        <div class="dashboard-grid customer-grid">
-          <section class="panel">
-            <div class="panel-title">
-              <h3>可点菜单</h3>
-              <span>选择喜欢的菜</span>
+      <section class="workspace chef-workspace hidden" id="chefWorkspace" aria-labelledby="chefTitle">
+        <div class="desktop-app">
+          <div class="desktop-top">
+            <div class="brand">
+              <div class="logo chef" aria-hidden="true">厨</div>
+              <div>
+                <strong id="chefTitle">厨房工作台</strong>
+                <span>晚饭档 18:00 - 20:00</span>
+              </div>
             </div>
-            <div id="customerDishList" class="dish-list menu-grid"></div>
-          </section>
-
-          <aside class="side-panel">
-            <h3>提交订单</h3>
-            <form id="orderForm" class="dish-form">
-              <label>
-                你的称呼
-                <input name="customer" required placeholder="例如：小张" />
-              </label>
-              <label>
-                备注
-                <textarea name="note" placeholder="少油少辣、米饭多一点"></textarea>
-              </label>
-              <div id="selectedDishes" class="selected-dishes">还未选择菜品</div>
-              <button class="primary-button" type="submit">下单通知厨师</button>
-            </form>
-          </aside>
-        </div>
-
-        <section class="panel">
-          <div class="panel-title">
-            <h3>我的订单进度</h3>
-            <span id="customerOrderCount"></span>
+            <div class="session-actions">
+              <span id="chefActiveCount" class="tag">0 个订单进行中</span>
+              <button class="ghost-button" data-action="logout" type="button">切换角色</button>
+            </div>
           </div>
-          <div id="customerOrderList" class="order-list"></div>
-        </section>
+
+          <div class="desktop-body">
+            <aside class="sidebar">
+              <p class="eyebrow">Chef Console</p>
+              <nav class="nav" aria-label="厨师导航">
+                <a class="nav-item active" href="#chefOrders"><span>单</span>订单看板</a>
+                <a class="nav-item" href="#chefShopping"><span>购</span>采购清单</a>
+                <a class="nav-item" href="#chefMenu"><span>菜</span>菜单管理</a>
+              </nav>
+            </aside>
+
+            <div class="workarea">
+              <section class="metrics" aria-label="厨房概览">
+                <div class="metric"><span>新订单</span><strong id="newOrderMetric">0</strong></div>
+                <div class="metric"><span>待采购材料</span><strong id="shoppingMetric">0</strong></div>
+                <div class="metric"><span>今日可点</span><strong id="availableDishMetric">0</strong></div>
+              </section>
+
+              <section id="chefOrders" class="panel-block">
+                <div class="section-title">
+                  <div>
+                    <p class="eyebrow">Orders</p>
+                    <h3>订单看板</h3>
+                  </div>
+                  <span id="orderCount" class="tag">0 单</span>
+                </div>
+                <div id="chefOrderLanes" class="kanban"></div>
+              </section>
+
+              <section id="chefShopping" class="panel-block">
+                <div class="section-title">
+                  <div>
+                    <p class="eyebrow">Shopping</p>
+                    <h3>待采购清单</h3>
+                  </div>
+                  <span class="tag warning">来自未完成订单</span>
+                </div>
+                <div id="shoppingList" class="shopping-list"></div>
+              </section>
+
+              <section id="chefMenu" class="split panel-block">
+                <div>
+                  <div class="section-title">
+                    <div>
+                      <p class="eyebrow">Menu</p>
+                      <h3>菜单管理</h3>
+                    </div>
+                    <span id="dishCount" class="tag">0 道菜</span>
+                  </div>
+                  <div id="chefDishList" class="menu-admin-list"></div>
+                </div>
+
+                <aside class="editor-panel">
+                  <h3 id="dishFormTitle">新增菜品</h3>
+                  <form id="dishForm" class="form-stack">
+                    <input name="id" type="hidden" />
+                    <label>
+                      菜品名称
+                      <input name="name" required placeholder="例如：番茄牛腩" />
+                    </label>
+                    <label>
+                      分类
+                      <select name="category" required>
+                        <option value="推荐">推荐</option>
+                        <option value="家常菜">家常菜</option>
+                        <option value="快手菜">快手菜</option>
+                        <option value="汤">汤</option>
+                        <option value="主食">主食</option>
+                      </select>
+                    </label>
+                    <label>
+                      菜品描述
+                      <textarea name="description" required placeholder="适合几人、口味特点、注意事项"></textarea>
+                    </label>
+                    <label>
+                      材料清单
+                      <textarea name="ingredients" required placeholder="番茄 x2 个&#10;牛腩 x500 g&#10;土豆 x1 个"></textarea>
+                    </label>
+                    <div class="two-col">
+                      <label>
+                        制作时长
+                        <input name="minutes" type="number" min="1" required placeholder="35" />
+                      </label>
+                      <label>
+                        难易程度
+                        <select name="difficulty" required>
+                          <option value="简单">简单</option>
+                          <option value="中等">中等</option>
+                          <option value="复杂">复杂</option>
+                        </select>
+                      </label>
+                    </div>
+                    <label class="checkbox-row">
+                      <input name="availableToday" type="checkbox" checked />
+                      今日可点
+                    </label>
+                    <div class="inline-actions">
+                      <button class="primary-button" type="submit">保存菜品</button>
+                      <button id="cancelEditDish" class="ghost-button" type="button">取消编辑</button>
+                    </div>
+                  </form>
+                </aside>
+              </section>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
 
