@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>吃饭了</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Dinner Ops</p>
+        <h1>吃饭了</h1>
+      </div>
+      <div class="session-actions">
+        <span id="currentRole" class="role-chip">请选择角色</span>
+        <button id="resetDemo" class="ghost-button" type="button">重置演示数据</button>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section class="login-panel" id="loginPanel" aria-labelledby="loginTitle">
+        <div class="intro">
+          <p class="eyebrow">Role Login</p>
+          <h2 id="loginTitle">饭点前，系统先帮你把菜安排上。</h2>
+          <p>厨师维护菜单和订单进度，客户选择菜品并实时查看厨房状态。</p>
+        </div>
+        <div class="role-grid">
+          <button class="role-card" data-role="chef" type="button">
+            <span class="role-icon">厨</span>
+            <strong>厨师登录</strong>
+            <span>录入菜品、查看待处理订单、汇总采购清单。</span>
+          </button>
+          <button class="role-card" data-role="customer" type="button">
+            <span class="role-icon">客</span>
+            <strong>客户登录</strong>
+            <span>浏览菜单、提交点单、收到“吃饭啦”通知。</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="workspace hidden" id="chefWorkspace" aria-labelledby="chefTitle">
+        <div class="workspace-head">
+          <div>
+            <p class="eyebrow">Chef Console</p>
+            <h2 id="chefTitle">厨房工作台</h2>
+          </div>
+          <button class="ghost-button" data-action="logout" type="button">切换角色</button>
+        </div>
+
+        <div class="dashboard-grid">
+          <aside class="side-panel">
+            <h3>新增菜品</h3>
+            <form id="dishForm" class="dish-form">
+              <label>
+                菜品名称
+                <input name="name" required placeholder="例如：番茄牛腩" />
+              </label>
+              <label>
+                材料清单
+                <textarea name="ingredients" required placeholder="番茄、牛腩、土豆、葱姜"></textarea>
+              </label>
+              <div class="two-col">
+                <label>
+                  制作时长
+                  <input name="minutes" type="number" min="1" required placeholder="35" />
+                </label>
+                <label>
+                  难易程度
+                  <select name="difficulty" required>
+                    <option value="简单">简单</option>
+                    <option value="中等">中等</option>
+                    <option value="困难">困难</option>
+                  </select>
+                </label>
+              </div>
+              <button class="primary-button" type="submit">保存菜品</button>
+            </form>
+          </aside>
+
+          <div class="content-stack">
+            <section class="panel">
+              <div class="panel-title">
+                <h3>菜单管理</h3>
+                <span id="dishCount"></span>
+              </div>
+              <div id="chefDishList" class="dish-list"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-title">
+                <h3>订单消息</h3>
+                <span id="orderCount"></span>
+              </div>
+              <div id="chefOrderList" class="order-list"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-title">
+                <h3>待采购清单</h3>
+                <span>来自未完成订单</span>
+              </div>
+              <div id="shoppingList" class="shopping-list"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace hidden" id="customerWorkspace" aria-labelledby="customerTitle">
+        <div class="workspace-head">
+          <div>
+            <p class="eyebrow">Customer Console</p>
+            <h2 id="customerTitle">今日点单</h2>
+          </div>
+          <button class="ghost-button" data-action="logout" type="button">切换角色</button>
+        </div>
+
+        <div class="dashboard-grid customer-grid">
+          <section class="panel">
+            <div class="panel-title">
+              <h3>可点菜单</h3>
+              <span>选择喜欢的菜</span>
+            </div>
+            <div id="customerDishList" class="dish-list menu-grid"></div>
+          </section>
+
+          <aside class="side-panel">
+            <h3>提交订单</h3>
+            <form id="orderForm" class="dish-form">
+              <label>
+                你的称呼
+                <input name="customer" required placeholder="例如：小张" />
+              </label>
+              <label>
+                备注
+                <textarea name="note" placeholder="少油少辣、米饭多一点"></textarea>
+              </label>
+              <div id="selectedDishes" class="selected-dishes">还未选择菜品</div>
+              <button class="primary-button" type="submit">下单通知厨师</button>
+            </form>
+          </aside>
+        </div>
+
+        <section class="panel">
+          <div class="panel-title">
+            <h3>我的订单进度</h3>
+            <span id="customerOrderCount"></span>
+          </div>
+          <div id="customerOrderList" class="order-list"></div>
+        </section>
+      </section>
+    </main>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
