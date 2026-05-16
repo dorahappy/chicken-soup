@@ -8,6 +8,8 @@
 ## 产品文档
 
 - [PRD：吃饭了 Web 系统](docs/prd.md)
+- [UI 视觉稿说明](docs/ui-visual-design.md)
+- [UI 视觉稿 HTML](docs/ui-visual-draft.html)
 
 ## 运行
 
